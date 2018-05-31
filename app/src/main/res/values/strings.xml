@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">GeoCalculator</string>
+    <string name="latitude1">Latitude 1</string>
+    <string name="longitude1">Longitude 1</string>
+    <string name="latitude2">Latitude 2</string>
+    <string name="longitude2">Longitude 2</string>
+    <string name="calculate">Calculate</string>
+    <string name="calculateDecr">Calculate button</string>
+    <string name="clear">Clear</string>
+    <string name="clearDescr">Clear Button</string>
+    <string name="distanceLabel">Distance:</string>
+    <string name="bearingLabel">Bearing:</string>
+    <string name="enterValidValues">Please enter valid values</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="miles">Miles</string>
+    <string name="degrees">Degrees</string>
+    <string name="mils">Mils</string>
+    <string name="typing">Tired of typing?</string>
+    <string name="bottomSearch">SEARCH</string>
+</resources>
