@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--setting page-->
     <item
         android:id="@+id/action_setting"
         android:checkable="false"
         android:orderInCategory="100"
         android:title="Setting" />
-
+    <!--history page-->
+    <item android:title="History"
+        android:id="@+id/action_history"
+        app:showAsAction="never" />
 </menu>

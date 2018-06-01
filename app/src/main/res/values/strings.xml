@@ -18,4 +18,5 @@
     <string name="mils">Mils</string>
     <string name="typing">Tired of typing?</string>
     <string name="bottomSearch">SEARCH</string>
+    <string name="title_activity_history">HistoryActivity</string>
 </resources>
