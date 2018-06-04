@@ -162,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(requestCode==HISTORY_RESULT){
 
+            if(data == null)
+                return;
+
             String[] vals = data.getStringArrayExtra("item");
             this.latitude1EditText.setText(vals[0]);
             this.longitude1EditText.setText(vals[1]);
