@@ -157,7 +157,7 @@ public class LocationSearchActivity extends AppCompatActivity implements DatePic
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-        DateTime date = new DateTime(year, monthOfYear + 1x, dayOfMonth, 0, 0);
+        DateTime date = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
         calcDateLbl.setText(formatted(date));
     }
 }
