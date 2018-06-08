@@ -8,9 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.example.hultinj.helloworld.dummy.HistoryContent;
-import com.example.hultinj.helloworld.dummy.HistoryContent.HistoryItem;
-
 public class HistoryActivity extends AppCompatActivity
         implements HistoryFragment.OnListFragmentInteractionListener{
 
@@ -32,10 +29,10 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(HistoryItem item) {
+    public void onListFragmentInteraction(LocationLookup item) {
         System.out.println("Interact!");
         Intent intent = new Intent();
-        String[] vals = {item.origLat, item.origLng, item.destLat, item.destLng};
+        String[] vals = {String.valueOf(item.getOrigLat()), String.valueOf(item.getOrigLng()), String.valueOf(item.getEndLat()), String.valueOf(item.getEndLng()) };
         intent.putExtra("item", vals);
         setResult(MainActivity.HISTORY_RESULT,intent);
         finish();

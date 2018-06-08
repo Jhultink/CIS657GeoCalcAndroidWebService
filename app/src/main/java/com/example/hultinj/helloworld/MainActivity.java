@@ -21,16 +21,24 @@ import android.support.v7.app.AppCompatActivity;
         import android.widget.TextView;
         import android.widget.Toast;
 
-import com.example.hultinj.helloworld.dummy.HistoryContent;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.parceler.Parcels;
 
-import java.nio.channels.FileLock;
-        import java.text.ParseException;
-        import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private DatabaseReference topRef;
+    public static List<LocationLookup> allHistory;
 
     private float distanceInKilometers;
     private double bearingInDegrees;
@@ -71,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         distanceLabel = findViewById(R.id.distanceLbl);
         bearingLabel = findViewById(R.id.bearingLbl);
 
+        allHistory = new ArrayList<LocationLookup>();
+
         calculateBtn.setOnClickListener(v -> {
             updateScreen();
         });
@@ -99,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
             this.distanceInKilometers = 0f;
             this.bearingInDegrees = 0f;
         });
+
+
 
     }
 
@@ -156,6 +168,20 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        allHistory.clear();
+        topRef = FirebaseDatabase.getInstance().getReference("history");
+        topRef.addChildEventListener (chEvListener);
+//topRef.addValueEventListener(valEvListener);
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        topRef.removeEventListener(chEvListener);
     }
 
     @Override
@@ -245,13 +271,47 @@ public class MainActivity extends AppCompatActivity {
         //this.bearingInDegrees = Math.toDegrees((Math.atan2(y, x)));
         //this.bearingInDegrees =  ((brng + 360) % 360);
 
-        redrawLabels();
+        LocationLookup entry = new LocationLookup();
+        entry.setOrigLat(lat1D);
+        entry.setOrigLng(lon1D);
+        entry.setEndLat(lat2D);
+        entry.setEndLng(lon2D);
+        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        entry.setTimestamp(fmt.print(DateTime.now()));
+        topRef.push().setValue(entry);
 
-        //presist history
-        HistoryContent.HistoryItem item = new
-                HistoryContent.HistoryItem(this.latitude1EditText.getText().toString(),
-                this.longitude1EditText.getText().toString(), this.latitude2EditText.getText().toString(),
-                this.longitude2EditText.getText().toString(), DateTime.now());
-        HistoryContent.addItem(item);
+        redrawLabels();
     }
+
+    private ChildEventListener chEvListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            LocationLookup entry = (LocationLookup)
+                    dataSnapshot.getValue(LocationLookup.class);
+            entry.setKey(dataSnapshot.getKey());
+            allHistory.add(entry);
+        }
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+        }
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            LocationLookup entry = (LocationLookup)
+                    dataSnapshot.getValue(LocationLookup.class);
+            List<LocationLookup> newHistory = new ArrayList<LocationLookup>();
+            for (LocationLookup t : allHistory) {
+                if (!t.getKey().equals(dataSnapshot.getKey())) {
+                    newHistory.add(t);
+                }
+            }
+            allHistory = newHistory;
+        }
+        @Override
+
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+        }
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+        }
+    };
 }

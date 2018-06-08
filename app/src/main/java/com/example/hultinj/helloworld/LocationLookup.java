@@ -1,5 +1,6 @@
 package com.example.hultinj.helloworld;
 
+import org.joda.time.DateTime;
 import org.parceler.Parcel;
 
 @Parcel
@@ -8,6 +9,26 @@ public class LocationLookup {
     private double origLng;
     private double endLat;
     private double endLng;
+    private String timestamp;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    private String key;
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
 
     public double getOrigLat() {
         return origLat;

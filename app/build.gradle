@@ -35,10 +35,15 @@ dependencies {
     implementation 'net.danlew:android.joda:2.9.5'
     implementation 'com.truizlop.sectionedrecyclerview:library:1.2.0'
 
-    implementation 'com.google.android.gms:play-services-places:11.4.0'
+    implementation 'com.google.android.gms:play-services-places:10.2.1'
     implementation 'com.borax12.materialdaterangepicker:library:1.9'
     implementation 'org.parceler:parceler-api:1.1.9'
     annotationProcessor 'org.parceler:parceler:1.1.9'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    implementation 'com.google.firebase:firebase-database:10.2.1'
 }
+
+apply plugin: 'com.google.gms.google-services'
+
