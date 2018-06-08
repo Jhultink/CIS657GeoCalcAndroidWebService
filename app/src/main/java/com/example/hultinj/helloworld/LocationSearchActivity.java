@@ -78,6 +78,11 @@ public class LocationSearchActivity extends AppCompatActivity implements DatePic
         }
     }
 
+    @OnClick(R.id.start_date)
+    public void datePressed() {
+        dpDialog.show(getFragmentManager(), "daterangedialog");
+    }
+
     @OnClick(R.id.orig_location)
     public void locationOrigPressed() {
         try {
@@ -152,8 +157,7 @@ public class LocationSearchActivity extends AppCompatActivity implements DatePic
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-        //startDate = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
-        //endDate = new DateTime(yearEnd, monthOfYearEnd + 1, dayOfMonthEnd, 0, 0);
-        //calcDateLbl.setText(formatted(startDate));
+        DateTime date = new DateTime(year, monthOfYear + 1x, dayOfMonth, 0, 0);
+        calcDateLbl.setText(formatted(date));
     }
 }
