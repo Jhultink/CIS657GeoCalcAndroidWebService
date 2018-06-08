@@ -9,7 +9,8 @@ package com.example.hultinj.helloworld;
 import android.content.Context;
         import android.content.Intent;
         import android.location.Location;
-        import android.support.v7.app.AppCompatActivity;
+import android.os.Parcelable;
+import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.view.Menu;
         import android.view.MenuItem;
@@ -23,6 +24,7 @@ import android.content.Context;
 import com.example.hultinj.helloworld.dummy.HistoryContent;
 
 import org.joda.time.DateTime;
+import org.parceler.Parcels;
 
 import java.nio.channels.FileLock;
         import java.text.ParseException;
@@ -34,12 +36,14 @@ public class MainActivity extends AppCompatActivity {
     private double bearingInDegrees;
     public static final int FEEDBACK = 100;
     public static final int HISTORY_RESULT = 101;
+    public static final int LOCATION_SEARCH = 102;
+
     private static String distanceUnit="Kilometers";
     private static String bearingUnit="Degrees";
 
     Button calculateBtn;
     Button clearBtn;
-
+    Button searchBtn;
 
     EditText longitude1EditText;
     EditText longitude2EditText;
@@ -58,18 +62,23 @@ public class MainActivity extends AppCompatActivity {
 
         calculateBtn = findViewById(R.id.calculateBtn);
         clearBtn = findViewById(R.id.clearBtn);
+        searchBtn = findViewById(R.id.searchBtn);
         longitude1EditText = findViewById(R.id.longitude1);
         longitude2EditText = findViewById(R.id.longitude2);
         latitude1EditText = findViewById(R.id.latitude1);
         latitude2EditText = findViewById(R.id.latitude2);
 
-         distanceLabel = findViewById(R.id.distanceLbl);
-         bearingLabel = findViewById(R.id.bearingLbl);
+        distanceLabel = findViewById(R.id.distanceLbl);
+        bearingLabel = findViewById(R.id.bearingLbl);
 
         calculateBtn.setOnClickListener(v -> {
             updateScreen();
         });
 
+        searchBtn.setOnClickListener(v ->{
+            Intent intent = new Intent(this, LocationSearchActivity.class);
+            startActivityForResult(intent, LOCATION_SEARCH);
+        });
 
         clearBtn.setOnClickListener(v -> {
 
@@ -171,6 +180,14 @@ public class MainActivity extends AppCompatActivity {
             this.latitude2EditText.setText(vals[2]);
             this.longitude2EditText.setText(vals[3]);
             this.updateScreen();
+        } else if(requestCode == LOCATION_SEARCH) {
+            Parcelable par = data.getParcelableExtra("TRIP");
+            LocationLookup locationLookup = Parcels.unwrap(par);
+
+            this.latitude1EditText.setText(String.valueOf(locationLookup.getOrigLat()));
+            this.longitude1EditText.setText(String.valueOf(locationLookup.getOrigLng()));
+            this.latitude2EditText.setText(String.valueOf(locationLookup.getEndLat()));
+            this.longitude2EditText.setText(String.valueOf(locationLookup.getEndLng()));
         }
     }
 

@@ -19,4 +19,10 @@
     <string name="typing">Tired of typing?</string>
     <string name="bottomSearch">SEARCH</string>
     <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_location_search">LocationSearchActivity</string>
+    <string name="trip_info">Enter trip info</string>
+    <string name="enter_date">Enter Date</string>
+    <string name="calc_date">Calculation Date</string>
+    <string name="location_info">Location Information</string>
+    <string name="first_loc">First Location</string>
 </resources>
