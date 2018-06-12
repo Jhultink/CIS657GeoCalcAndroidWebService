@@ -6,10 +6,13 @@
 
 package com.example.hultinj.helloworld;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
         import android.content.Intent;
-        import android.location.Location;
+import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Parcelable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.view.Menu;
@@ -18,9 +21,11 @@ import android.support.v7.app.AppCompatActivity;
         import android.view.inputmethod.InputMethodManager;
         import android.widget.Button;
         import android.widget.EditText;
-        import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.TextView;
         import android.widget.Toast;
 
+import com.example.hultinj.helloworld.webservice.WeatherService;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +39,8 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.hultinj.helloworld.webservice.WeatherService.BROADCAST_WEATHER;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
     TextView distanceLabel;
     TextView bearingLabel;
 
+    ImageView p1Icon;
+    ImageView p2Icon;
+    TextView p1Temp;
+    TextView p2Temp;
+    TextView p1Summary;
+    TextView p2Summary;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
 
         distanceLabel = findViewById(R.id.distanceLbl);
         bearingLabel = findViewById(R.id.bearingLbl);
+
+        p1Icon = findViewById(R.id.p1Icon);
+        p2Icon = findViewById(R.id.p2Icon);
+        p1Temp = findViewById(R.id.p1Temp);
+        p2Temp = findViewById(R.id.p2Temp);
+        p1Summary = findViewById(R.id.p1Summary);
+        p2Summary = findViewById(R.id.p2Summary);
 
         allHistory = new ArrayList<LocationLookup>();
 
@@ -108,10 +130,9 @@ public class MainActivity extends AppCompatActivity {
 
             this.distanceInKilometers = 0f;
             this.bearingInDegrees = 0f;
+
+            this.setWeatherViews(View.INVISIBLE);
         });
-
-
-
     }
 
     private void redrawLabels() {
@@ -176,12 +197,25 @@ public class MainActivity extends AppCompatActivity {
         allHistory.clear();
         topRef = FirebaseDatabase.getInstance().getReference("history");
         topRef.addChildEventListener (chEvListener);
-//topRef.addValueEventListener(valEvListener);
+        IntentFilter weatherFilter = new IntentFilter(BROADCAST_WEATHER);
+        LocalBroadcastManager.getInstance(this).registerReceiver(weatherReceiver, weatherFilter);
+        this.setWeatherViews(View.INVISIBLE);
     }
+
     @Override
     public void onPause(){
         super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(weatherReceiver);
         topRef.removeEventListener(chEvListener);
+    }
+
+    private void setWeatherViews(int visible) {
+        p1Icon.setVisibility(visible);
+        p2Icon.setVisibility(visible);
+        p1Summary.setVisibility(visible);
+        p2Summary.setVisibility(visible);
+        p1Temp.setVisibility(visible);
+        p2Temp.setVisibility(visible);
     }
 
     @Override
@@ -280,8 +314,36 @@ public class MainActivity extends AppCompatActivity {
         entry.setTimestamp(fmt.print(DateTime.now()));
         topRef.push().setValue(entry);
 
+        WeatherService.startGetWeather(this, Double.toString(lat1D), Double.toString(lon1D), "p1");
+        WeatherService.startGetWeather(this, Double.toString(lat2D), Double.toString(lon2D), "p2");
+
         redrawLabels();
     }
+
+    private BroadcastReceiver weatherReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            double temp = bundle.getDouble("TEMPERATURE");
+            String summary = bundle.getString("SUMMARY");
+            String icon = bundle.getString("ICON").replaceAll("-", "_");
+            String key = bundle.getString("KEY");
+            int resID = getResources().getIdentifier(icon , "drawable",
+                    getPackageName());
+            setWeatherViews(View.VISIBLE);
+            if (key.equals("p1")) {
+                p1Summary.setText(summary);
+                p1Temp.setText(Double.toString(temp));
+                p1Icon.setImageResource(resID);
+
+                p1Icon.setVisibility(View.INVISIBLE);
+            } else {
+                p2Summary.setText(summary);
+                p2Temp.setText(Double.toString(temp));
+                p2Icon.setImageResource(resID);
+            }
+        }
+    };
 
     private ChildEventListener chEvListener = new ChildEventListener() {
         @Override

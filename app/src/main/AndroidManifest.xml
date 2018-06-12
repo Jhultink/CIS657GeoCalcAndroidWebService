@@ -12,6 +12,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDDOCTdEs6r4Lyq3j9fLc35qMK_sswJaZA" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +41,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.hultinj.helloworld.MainActivity" />
         </activity>
+
+        <service
+            android:name=".webservice.WeatherService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
